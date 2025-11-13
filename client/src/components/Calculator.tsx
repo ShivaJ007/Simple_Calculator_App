@@ -8,6 +8,7 @@ export function Calculator() {
   const [result, setResult] = useState("0");
   const [error, setError] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [lastResult, setLastResult] = useState<string | null>(null);
 
   const autoCorrectExpression = (expr: string): string => {
     return expr.replace(/([+\-×÷]){2,}/g, (match) => match.slice(-1));
@@ -66,11 +67,14 @@ export function Calculator() {
     if (value === "AC") {
       setExpression("");
       setResult("0");
+      setLastResult(null);
     } else if (value === "C") {
       setExpression("");
       setResult("0");
+      setLastResult(null);
     } else if (value === "DEL") {
       setExpression((prev) => prev.slice(0, -1));
+      setLastResult(null);
     } else if (value === "=") {
       const correctedExpr = autoCorrectExpression(expression);
       const calcResult = calculateResult(correctedExpr);
@@ -78,29 +82,41 @@ export function Calculator() {
       if (calcResult === "Error") {
         setError(true);
         setResult(calcResult);
+        setLastResult(null);
         setTimeout(() => setError(false), 2000);
       } else {
         setResult(calcResult);
+        setLastResult(calcResult);
         addToHistory(correctedExpr, calcResult);
         setExpression("");
       }
     } else {
-      setExpression((prev) => {
-        const newExpr = prev + value;
-        return autoCorrectExpression(newExpr);
-      });
+      const isOperator = ["+", "−", "×", "÷"].includes(value);
+      
+      if (lastResult !== null && !isOperator) {
+        setExpression(value);
+        setLastResult(null);
+      } else if (lastResult !== null && isOperator) {
+        setExpression(lastResult + value);
+        setLastResult(null);
+      } else {
+        setExpression((prev) => {
+          const newExpr = prev + value;
+          return autoCorrectExpression(newExpr);
+        });
+      }
     }
-  }, [expression, calculateResult, addToHistory]);
+  }, [expression, calculateResult, addToHistory, lastResult]);
 
   useEffect(() => {
     if (expression) {
       const corrected = autoCorrectExpression(expression);
       const liveResult = calculateResult(corrected, true);
       setResult(liveResult);
-    } else {
+    } else if (lastResult === null) {
       setResult("0");
     }
-  }, [expression, calculateResult]);
+  }, [expression, calculateResult, lastResult]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
