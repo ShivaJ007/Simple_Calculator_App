@@ -13,15 +13,30 @@ export function Calculator() {
     return expr.replace(/([+\-×÷]){2,}/g, (match) => match.slice(-1));
   };
 
-  const calculateResult = useCallback((expr: string): string => {
+  const calculateResult = useCallback((expr: string, isLiveCalc: boolean = false): string => {
     if (!expr) return "0";
     
-    try {
-      const sanitized = expr
-        .replace(/×/g, "*")
-        .replace(/÷/g, "/")
-        .replace(/−/g, "-");
+    const sanitized = expr
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/−/g, "-");
+    
+    const endsWithOperator = /[+\-*/.]$/.test(sanitized);
+    
+    if (isLiveCalc && endsWithOperator) {
+      const withoutOperator = sanitized.slice(0, -1);
+      if (!withoutOperator) return "0";
       
+      try {
+        const result = Function(`"use strict"; return (${withoutOperator})`)();
+        if (!isFinite(result)) return "0";
+        return Number.isInteger(result) ? result.toString() : result.toFixed(8).replace(/\.?0+$/, "");
+      } catch {
+        return "0";
+      }
+    }
+    
+    try {
       const result = Function(`"use strict"; return (${sanitized})`)();
       
       if (!isFinite(result)) {
@@ -80,7 +95,7 @@ export function Calculator() {
   useEffect(() => {
     if (expression) {
       const corrected = autoCorrectExpression(expression);
-      const liveResult = calculateResult(corrected);
+      const liveResult = calculateResult(corrected, true);
       setResult(liveResult);
     } else {
       setResult("0");
