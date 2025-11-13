@@ -119,7 +119,7 @@ http://localhost:5173
 ![Light Mode](![Light Mode](web_lightmode.png))
 
 ### 🌙 Dark Mode
-![Dark Mode](![Light Mode](web_darkmode.png))
+![Dark Mode](![Dark Mode](web_dakrmode.png))
 
 ### 📱 Mobile View
 ![Mobile View](![Light Mode](mobile_view.png))
