@@ -115,12 +115,15 @@ http://localhost:5173
 
 # 📸 Screenshots
 
-*Add your calculator UI screenshots here (light mode / dark mode if available).*
+### 🖥️ Light Mode
+![Light Mode](![Light Mode](web_lightmode.png))
 
-```
-📷 Screenshot 1 – Home UI
-📷 Screenshot 2 – History Panel
-📷 Screenshot 3 – Mobile Responsive View
+### 🌙 Dark Mode
+![Dark Mode](![Light Mode](web_darkmode.png))
+
+### 📱 Mobile View
+![Mobile View](![Light Mode](mobile_view.png))
+
 ```
 
 ---
