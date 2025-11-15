@@ -4,7 +4,6 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 export default defineConfig({
-  // VERY IMPORTANT FOR GITHUB PAGES
   base: "/Simple_Calculator_App/",
 
   plugins: [
